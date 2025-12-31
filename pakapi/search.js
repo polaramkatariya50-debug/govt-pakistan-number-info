@@ -1,18 +1,29 @@
-export default function handler(req, res) {
+export default async function handler(req, res) {
 
-  if (req.method !== "GET") {
+  if (req.method !== "POST") {
     return res.status(405).json({
       success: false,
-      error: "Only GET method allowed"
+      error: "Only POST method allowed"
     });
   }
 
-  const { query } = req.query;
+  let body = req.body;
+
+  // Vercel edge case fix
+  if (typeof body === "string") {
+    try {
+      body = JSON.parse(body);
+    } catch {
+      body = {};
+    }
+  }
+
+  const query = body.query;
 
   if (!query) {
     return res.status(400).json({
       success: false,
-      error: "Query parameter missing"
+      error: "Query missing"
     });
   }
 
@@ -23,13 +34,13 @@ export default function handler(req, res) {
     });
   }
 
-  // 🔒 DEMO DATA (Safe)
+  // 🔒 SAFE DEMO DATA
   const results = [
     {
       n: query.length === 10 ? query : "03001234567",
-      name: "@VNI0X",
+      name: "Demo User",
       cnic: query.length === 13 ? query : "0000000000000",
-      address: "MADE BY @VNI0X)"
+      address: "Pakistan (Demo Data)"
     }
   ];
 
