@@ -1,69 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
   <title>Pakistan Number Info</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #0f5132;
-      color: #fff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-    .box {
-      background: #198754;
-      padding: 30px;
-      border-radius: 10px;
-      width: 100%;
-      max-width: 400px;
-    }
-    input, button {
-      width: 100%;
-      padding: 12px;
-      margin-top: 10px;
-      border: none;
-      border-radius: 6px;
-    }
-    button {
-      background: #fff;
-      color: #000;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    pre {
-      background: #000;
-      padding: 10px;
-      margin-top: 15px;
-      overflow-x: auto;
-    }
-  </style>
 </head>
 <body>
 
-<div class="box">
-  <h2>Pakistan Number Info</h2>
-  <input type="text" id="num" placeholder="Enter number or CNIC">
-  <button onclick="search()">Search</button>
-  <pre id="result"></pre>
-</div>
+<input id="num" placeholder="Enter number">
+<button onclick="search()">Search</button>
+<pre id="out"></pre>
 
 <script>
 async function search() {
-  const q = document.getElementById("num").value.trim();
-  const resBox = document.getElementById("result");
-  resBox.textContent = "Loading...";
+  const q = document.getElementById("num").value;
 
-  try {
-    const res = await fetch(`/api/search?query=${q}`);
-    const data = await res.json();
-    resBox.textContent = JSON.stringify(data, null, 2);
-  } catch (e) {
-    resBox.textContent = "Error fetching API";
-  }
+  const res = await fetch("/api/search", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ query: q })
+  });
+
+  const data = await res.json();
+  document.getElementById("out").textContent =
+    JSON.stringify(data, null, 2);
 }
 </script>
 
